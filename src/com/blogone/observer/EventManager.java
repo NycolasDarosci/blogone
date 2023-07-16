@@ -22,11 +22,6 @@ public class EventManager {
         users.add(jobListener);
     }
 
-    public void unsubscribe(String eventType, JobListener jobListener) {
-        List<JobListener> users = listeners.get(eventType);
-        users.remove(jobListener);
-    }
-
     public void notify(String eventType, SlackWebhookClient e) throws Exception {
         List<JobListener> users = listeners.get(eventType);
         for (JobListener jobListener : users) {
