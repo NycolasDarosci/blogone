@@ -1,5 +1,6 @@
 package com.blogone.slack;
 
+import com.blogone.observer.JobListener;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -11,24 +12,22 @@ public class SlackWebhookClient {
 
     private static final String CONTENT_TYPE = "application/json";
 
-    public static void sendMessage(Exception ex) throws IOException {
+    public void sendMessage(Exception e, JobListener jobListener) {
         try {
-            log.info("Sending error message to Slack...");
+            log.info("SlackWebhookClient() -> Sending error message to Slack... " + "Sent by Listener: " + jobListener.getClass().getName());
             OkHttpClient client = new OkHttpClient().newBuilder().build();
 
-            RequestBody body = createRequestBodyWith(ex);
+            RequestBody body = createRequestBodyWith(e);
 
             Request request = buildRequest(body);
 
             client.newCall(request).execute();
-            log.info("Error message sent to Slack.");
-
-        } catch (IOException e) {
-            log.warning("Something happened when tried to make a call: " + e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.warning(e.getMessage());
-            throw e;
+            log.info("SlackWebhookClient() -> Error message sent to Slack.");
+        } catch (IOException ex) {
+            log.warning("SlackWebhookClient() -> Something happened when tried to make a call: " + ex.getMessage());
+        } catch (Exception ex) {
+            log.warning("SlackWebhookClient() -> " + ex.getMessage());
+            throw ex;
         }
     }
 
